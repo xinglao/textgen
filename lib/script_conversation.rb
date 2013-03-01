@@ -1,12 +1,12 @@
 def conversation(&block)
   puts '<conversation>'
-  c = Conversation.new
+  c = ScriptConversation.new
   c.instance_eval(&block)
   puts '</conversation>'
   puts c.result_set.inspect
 end
 
-class Conversation
+class ScriptConversation
   attr_accessor :result_set
 
   def initialize
