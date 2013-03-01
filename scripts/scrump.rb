@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require File.expand_path('.') + '/textgen_conversation'
+require File.expand_path('.') + '/lib/textgen_conversation'
 
 conversation do
   say 'hello' 
