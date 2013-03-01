@@ -1,59 +1,42 @@
-def conversation(&block)
-  app = ConversationText.new
-  app.instance_eval(&block)
-  puts app.result_set
+require 'pry'
+require 'sinatra'
+
+get '/spawn' do
+  script = params[:script]
+  session = session_from_params(params)
+  session_log = "tmp/sessions/#{session}.log"
+  `tmux new-session -s #{session} -d`
+  `tmux pipe-pane -o -t #{session} 'cat >> #{session_log}'`
+  `touch #{session_log}`
+  `tmux send-keys -t #{session} 'scripts/#{script}' C-m`
+  puts `tmux list-sessions`
+  read_output(session_log)
 end
 
-class ConversationText
-  attr_accessor :result_set
+get '/message' do
+  session = session_from_params(params)
+  message = params[:message]
 
-  def initialize 
-    @result_set = {}
-  end
+  `tmux send-keys -t #{session} '#{message}' C-m`
 
-  def say(message)
-    puts message
-  end
-
-  def ask(field, message, args={})
-    as = args[:as]
-
-    valid = false
-    tries = 0
-    while !valid and tries < 5
-      valid = true
-
-      puts message
-      response = gets
-
-      case as
-        when :number
-          if response =~ /\d+/
-            response = response.to_i
-          else
-            valid = f
-          end
-        when :email
-          regex = /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
-          unless response =~ regex
-            valid = false
-          end
-        when :phone_number
-        when :date
-        else
-      end
-
-      tries += 1
-      break if valid
-
-      puts "you did not enter it correctly, please try again..."
-    end
-
-    @result_set[field] = response
-
-    self.class.send(:define_method, field) do
-      response
-    end
-  end
+  output = read_output("tmp/sessions/#{session}.log")
+  `tmux kill-session -t #{session}`
+  if output =~ /<\/\$>\s*$/ 
+  output
 end
 
+def session_from_params(params)
+  (params[:script] + params[:user_id]).gsub(/\W+/,'-')
+end
+
+def read_output(session_log)
+  output = ""
+  open(session_log, "r+") do |output_file|
+    loop do
+      output += output_file.read
+      break if output =~ /<\/\?>\s*$/ || output =~ /<\/\$>\s*$/ 
+    end
+  end
+  `> #{session_log}`
+  output
+end
