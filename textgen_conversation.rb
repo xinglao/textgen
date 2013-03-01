@@ -3,6 +3,7 @@ def conversation(&block)
   c = Conversation.new
   c.instance_eval(&block)
   puts '</conversation>'
+  puts c.result_set.inspect
 end
 
 class Conversation
@@ -74,4 +75,18 @@ class Conversation
     say "confirm...?"
   end
 
+  def hide item
+    case item
+    when Array
+      item.each do |i|
+        @result_set.delete(i)
+      end
+    else
+      @result_set.delete(item)
+    end
+  end
+
+  def record(field, value) 
+    @result_set[field] = value
+  end
 end
