@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require File.expand_path('.') + '/lib/script_conversation'
+require File.expand_path('..') + '/lib/script_conversation'
 
 conversation do
   say 'hello' 

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require File.expand_path('..') + '/textgen_conversation'
+require File.expand_path('..') + '/lib/script_conversation'
 
 def current_balance
   # Any Ruby code to connect out to external systems.

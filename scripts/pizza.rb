@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-require File.expand_path('..') + '/textgen_conversation'
+require File.expand_path('..') + '/lib/script_conversation'
+
 conversation do
   say 'Welcome to Poutine on the Ritz, Quebecs Health Food Take Out' 
   
