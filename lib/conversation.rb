@@ -38,11 +38,11 @@ class Conversation
     File.open(session_log, "r+") do |output_file|
       loop do
         output += output_file.read
-        break if end_of_message?(output) or quit_conversation?(output)
+        break if end_of_message?(output) or end_of_conversation?(output)
       end
     end
     truncate_log
-    close if output =~ /<\/\$>\s*$/ 
+    close if end_of_conversation?(output)
     output
   end
 
@@ -64,8 +64,8 @@ class Conversation
 
 private
 
-  def quit_conversation?(message)
-    message =~ /<\/\$>\s*$/
+  def end_of_conversation?(message)
+    message =~ /<\/conversation>/
   end
 
   def end_of_message?(message)
