@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-require File.expand_path('..') + '/lib/script_conversation'
+#require_relative File.expand_path('..') + '/lib/script_conversation'
+require File.expand_path('../../lib/script_conversation', __FILE__)
 
 conversation do
   say 'hello' 
@@ -27,6 +28,13 @@ conversation do
   ask :email_address, "What is your email address?", :as => :email
 
   ask :postal_code, "What's your postal code?", :as => /[A-Z][0-9][A-Z]\ ?[0-9][A-Z][0-9]/i#, :repeat_on_error => true, :error_message => 'nooooo'
+
+
+  result_set.delete(:apples)
+
+  result_set[:apples] = get_apples_from_3rd_party_api
+  record(:apples, get_apples_from_3rd_party_api)
   
   say 'goodbye'
 end
+

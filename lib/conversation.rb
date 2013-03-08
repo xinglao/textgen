@@ -65,7 +65,7 @@ class Conversation
 private
 
   def quit_conversation?(message)
-    message =~ /<\/\$>\s*$/ 
+    message =~ /<\/\$>\s*$/
   end
 
   def end_of_message?(message)
