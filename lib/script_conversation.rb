@@ -3,7 +3,6 @@ def conversation(&block)
   c = ScriptConversation.new
   c.instance_eval(&block)
   puts '</conversation>'
-  puts c.result_set.inspect
 end
 
 class ScriptConversation

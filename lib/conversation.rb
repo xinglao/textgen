@@ -1,5 +1,8 @@
 class Conversation
 
+  END_OF_MESSAGE_PATTERN = /<\/\?>\s*$/
+  START_CONVERSATION_PATTERN = /^.*<conversation>/m
+  END_CONVERSATION_PATTERN = /<\/conversation>.*$/m
   SCRIPT_DIR    = './scripts'
   SESSION_DIR   = './tmp/sessions'
 
@@ -43,6 +46,9 @@ class Conversation
     end
     truncate_log
     close if end_of_conversation?(output)
+    output.gsub!(START_CONVERSATION_PATTERN,'')
+    output.gsub!(END_CONVERSATION_PATTERN,'</session>')
+    output.gsub!(END_OF_MESSAGE_PATTERN,'')
     output
   end
 
@@ -65,11 +71,11 @@ class Conversation
 private
 
   def end_of_conversation?(message)
-    message =~ /<\/conversation>/
+    message =~ END_CONVERSATION_PATTERN
   end
 
   def end_of_message?(message)
-    message =~ /<\/\?>\s*$/
+    message =~ END_OF_MESSAGE_PATTERN 
   end
 
   def session_name
