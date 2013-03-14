@@ -1,6 +1,6 @@
 class Conversation
 
-  END_OF_MESSAGE_PATTERN = /<\/\?>\s*$/
+  END_OF_MESSAGE_PATTERN = /<\/eom>/
   START_CONVERSATION_PATTERN = /^.*<conversation>/m
   END_CONVERSATION_PATTERN = /<\/conversation>.*$/m
   SCRIPT_DIR    = './scripts'
@@ -48,7 +48,7 @@ class Conversation
     close if end_of_conversation?(output)
     output.gsub!(START_CONVERSATION_PATTERN,'')
     output.gsub!(END_CONVERSATION_PATTERN,'</session>')
-    output.gsub!(END_OF_MESSAGE_PATTERN,'')
+    #output.gsub!(END_OF_MESSAGE_PATTERN,'')
     output
   end
 
