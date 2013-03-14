@@ -1,7 +1,10 @@
+require 'json'
+
 def conversation(&block)
   puts '<conversation>'
   c = ScriptConversation.new
   c.instance_eval(&block)
+  puts '</?>' + c.result_set.to_json
   puts '</conversation>'
 end
 
@@ -17,8 +20,9 @@ class ScriptConversation
   end
 
   def ask(field, message, args={})
+    delim = '</eom>'
 
-    delim = '</?>'
+    # message <?>{}
     as = args[:as]
 
     valid = false
@@ -29,7 +33,7 @@ class ScriptConversation
       pattern = /^.+/
       conversion = nil
 
-      say message + delim
+      say message + delim + @result_set.to_json
       response = $stdin.gets.strip
 
       exit if response == 'quit'
