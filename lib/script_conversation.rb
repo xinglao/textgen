@@ -4,7 +4,7 @@ def conversation(&block)
   puts '<conversation>'
   c = ScriptConversation.new
   c.instance_eval(&block)
-  puts '</?>' + c.result_set.to_json
+  puts '</eom>' + c.result_set.to_json
   puts '</conversation>'
 end
 
