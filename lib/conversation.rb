@@ -32,6 +32,7 @@ class Conversation
   end
 
   def write(message)
+    puts 'received message:' + message
     send_keys(message)
   end
 
@@ -41,7 +42,11 @@ class Conversation
     File.open(session_log, "r+") do |output_file|
       loop do
         output += output_file.read
+
+        puts output
+        puts 'breaking eom found' if end_of_message?(output) or end_of_conversation?(output)
         break if end_of_message?(output) or end_of_conversation?(output)
+        sleep(0.01)
       end
     end
     truncate_log
