@@ -6,6 +6,8 @@ class Conversation
   SCRIPT_DIR    = './scripts'
   SESSION_DIR   = './tmp/sessions'
 
+  MAX_READ_ATTEMPTS = 300
+
   def self.prepare_directories
     `mkdir -p #{SESSION_DIR}`
     `mkdir -p #{SCRIPT_DIR}`
@@ -40,8 +42,9 @@ class Conversation
   def read
     `touch #{session_log}`
     output = ""
+    too_many_read_attempts = false 
     File.open(session_log, "r+") do |output_file|
-      loop do
+      too_many_read_attempts = MAX_READ_ATTEMPTS.times do |i|
         output += output_file.read
 
         puts output
@@ -51,10 +54,14 @@ class Conversation
       end
     end
     truncate_log
-    close if end_of_conversation?(output)
-    output.gsub!(START_CONVERSATION_PATTERN,'')
-    output.gsub!(END_CONVERSATION_PATTERN,'</session>')
-    #output.gsub!(END_OF_MESSAGE_PATTERN,'')
+    close if end_of_conversation?(output)  or too_many_read_attempts
+    if too_many_read_attempts
+      output = output + '</error></session>'
+    else
+      output.gsub!(START_CONVERSATION_PATTERN,'')
+      output.gsub!(END_CONVERSATION_PATTERN,'</session>')
+      #output.gsub!(END_OF_MESSAGE_PATTERN,'')
+    end
     output[@last_message] = '' if @last_message
     output
   end

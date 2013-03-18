@@ -4,6 +4,7 @@ require File.expand_path('../../lib/script_conversation', __FILE__)
 
 conversation do
   say 'hello' 
+  raise 'nooooo'
 
   loop do
     ask :number_of_apples, "how many apples do you want?", :as => :number
