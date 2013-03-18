@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require File.expand_path('..') + '/lib/script_conversation'
+require File.expand_path('../../lib/script_conversation', __FILE__)
 
 def current_balance
   # Any Ruby code to connect out to external systems.
@@ -18,7 +18,7 @@ conversation do
   if confirm_account(session_from_number) then
     ask :service, 
       'Thanks for being a customer! Because your cell phone is authorized by our company, 
-       theres no need to login. balance, payments, orders?', :as => /(balance|payments|orders)/
+       theres no need to login. Please enter balance, payments or orders', :as => /(balance|payments|orders)/
     case service.downcase
     when "balance"
       say "Your current account balance is #{current_balance}"

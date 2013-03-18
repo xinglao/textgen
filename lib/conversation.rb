@@ -33,6 +33,7 @@ class Conversation
 
   def write(message)
     puts 'received message:' + message
+    @last_message = message
     send_keys(message)
   end
 
@@ -54,6 +55,7 @@ class Conversation
     output.gsub!(START_CONVERSATION_PATTERN,'')
     output.gsub!(END_CONVERSATION_PATTERN,'</session>')
     #output.gsub!(END_OF_MESSAGE_PATTERN,'')
+    output[@last_message] = '' if @last_message
     output
   end
 
