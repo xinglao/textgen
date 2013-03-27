@@ -13,10 +13,10 @@ class Conversation
     `mkdir -p #{SCRIPT_DIR}`
   end
 
-  def self.find_or_create(script, user_id)
+  def self.find_or_create(user_id, script, version, url)
     inst = self.new
     inst.user_id = user_id
-    inst.script = File.join(SCRIPT_DIR, script)
+    inst.assign_script(script, version, url)
     inst.open if inst.closed?
     inst
   end
@@ -25,6 +25,22 @@ class Conversation
 
   def initialize
     self.class.prepare_directories
+  end
+
+  def assign_script(script, version, url)
+    ext = File.extname(script)
+    script.gsub!(ext,'')
+    name = (script + '_' + version.to_s).gsub(/[^_\w\.]+/, '_').downcase
+    name += ext
+    final = File.join(SCRIPT_DIR, name)
+    puts url
+    puts final
+    unless File.exist? final
+      `curl #{url} > #{final}`
+      `chmod +x #{final}`
+    end
+
+    self.script = final
   end
 
   def open
