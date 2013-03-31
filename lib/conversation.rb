@@ -28,13 +28,12 @@ class Conversation
   end
 
   def assign_script(script, version, url)
+    puts "I'm dealing with #{script}, #{version} and #{url}"
     ext = File.extname(script)
     script.gsub!(ext,'')
     name = (script + '_' + version.to_s).gsub(/[^_\w\.]+/, '_').downcase
     name += ext
     final = File.join(SCRIPT_DIR, name)
-    puts url
-    puts final
     unless File.exist? final
       `curl #{url} > #{final}`
       `chmod +x #{final}`
@@ -50,7 +49,6 @@ class Conversation
   end
 
   def write(message)
-    puts 'received message:' + message
     @last_message = message
     send_keys(message)
   end
@@ -62,8 +60,6 @@ class Conversation
     File.open(session_log, "r+") do |output_file|
       too_many_read_attempts = MAX_READ_ATTEMPTS.times do |i|
         output += output_file.read
-
-        puts output
         puts 'breaking eom found' if end_of_message?(output) or end_of_conversation?(output)
         break if end_of_message?(output) or end_of_conversation?(output)
         sleep(0.01)

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-require File.expand_path('..') + '/lib/script_conversation'
-
+#require_relative File.expand_path('..') + '/lib/script_conversation'
+require File.expand_path('../../lib/script_conversation', __FILE__)
 require 'chronic'
 
 conversation do
