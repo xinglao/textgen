@@ -3,7 +3,7 @@ class Conversation
   END_OF_MESSAGE_PATTERN = /<\/eom>/
   START_CONVERSATION_PATTERN = /^.*<conversation>/m
   END_CONVERSATION_PATTERN = /<\/conversation>.*$/m
-  SCRIPT_DIR    = './scripts'
+  SCRIPT_DIR    = './tmp/scripts'
   SESSION_DIR   = './tmp/sessions'
 
   MAX_READ_ATTEMPTS = 300
