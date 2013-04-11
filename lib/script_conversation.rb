@@ -19,6 +19,7 @@ class ScriptConversation
 
   def say(message)
     puts message
+    STDOUT.flush
   end
 
   def ask(field, message, args={})

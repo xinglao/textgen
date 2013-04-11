@@ -3,6 +3,7 @@
 require File.expand_path('../../lib/script_conversation', __FILE__)
 
 conversation do
+  gets
   say 'hello' 
 
   loop do

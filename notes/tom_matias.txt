@@ -1,0 +1,52 @@
+What is your name? </?>
+Pick a color </? { as: ['one','two','three'], :many => true }
+
+-> Pick a color (red, green or blue)
+
+-> [ red, green, blue ]
+
+-> Question 2) Pick a color (your options are red => 1, green => 2 or blue => 3)
+
+
+Into the router from the script
+What sort of apple do you want?</?  { question: "What sort of apple do you want", as: choice, choices: spry, macintosh, gala }>
+
+Out of router into IVR
+{question : apple_type.wav, choices: 1,2,3}
+
+Hello, this is the Home Depot in Middletown, RI. What do you need today?
+
+WAV Dictionary
+Hello, this is the Home Depot => Hello.wav
+What do you need today => WhatDoYouNeed.wav
+
+Text -> Hello this is the  Home Depot
+button
+
+
+
+
+loop do
+    ask :number_of_apples, "how many apples do you want?", :as => :number
+    ask :type_of_apple, "What type of apple do you want?", :as => 'one,two,three', :other => true
+    # What type of apple do you want? (choices: one, two, three ... or something else?)
+
+    What type of apple do you want?
+    - one
+    - two
+    - three
+    - [ input ]
+
+    if number_of_apples < 20 and type_of_apple == "green"
+      break 
+    else
+      say "umm we don't have that many green apples sorry"
+    end
+  end
+
+
+
+
+
+
+
