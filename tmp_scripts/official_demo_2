@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+#require_relative File.expand_path('..') + '/lib/script_conversation'
+require File.expand_path('../../lib/script_conversation', __FILE__)
+
+conversation do
+
+  demos = %w(pizza banking health activation reservation)
+  current_demo = nil
+
+  say 'Welcome to the TextGen official demo. For more information about TextGen, please visit us at textGen.com' 
+  ask :demo, "Please pick one of the following : #{demos.join(",")}", :as => /pizza|banking|health|activation|reservation/
+
+
+
+
+  case demo.downcase
+  when "pizza"
+    ask :choice, "Welcome to Laurino's Pizza in Brewster! Cape Cod's Finest. Please say hours, reservation or takeout", :as => /hours|reservation|takeout/
+    case choice.downcase
+    when "hours"
+      say "Our hours are from 11 AM to 11 PM every day at 3668 Main St  Brewster, MA 02631"
+    when "reservation"
+      ask :reservation_time, "Please tell us when you would like a reservation. If we can't seat you, we will call you back."
+    when "takeout"
+      items = Array.new
+      done = nil
+      until done
+        ask :item, "What would you like to order from our menu?"
+        ask :anything_else, "Would you like anything else? (y/n)", :as => /y|n/
+        items << item
+        done = true if anything_else == "n"
+      end
+      say "You ordered #{items.join(",")}. Please come on down in 20 minutes to pick it  up!!!"
+      record(:items, items)
+
+    end
+  when "banking"
+    say "It's a #{demo} demo!!!"
+  when "health"
+    say "It's a #{demo} demo!!!"
+  when "activation"
+    say "It's a #{demo} demo!!!"
+  when "reservation"
+    say "It's a #{demo} demo!!!"
+  end
+  say 'Thank you!!!'
+end
+
