@@ -8,7 +8,7 @@ class Conversation
   attr_accessor :user_id, :script
 
   def initialize(user_id, script, version, url)
-    user_id = user_id
+    self.user_id = user_id
     assign_script(script, version, url)
   end
 
@@ -35,41 +35,22 @@ class Conversation
       command: self.script,
       dataLine: message,
       uuid: self.user_id 
-    }
+    }.to_json
   end
 
   def write(message)
-    return if message.blank?
     File.open("/var/tmp/scriptserver.in", "w+") do |f|
+      puts script_daemon_json(message)
       f.puts script_daemon_json(message)
       f.flush 
     end
   end
 
-  def read
-    output = ""
-    File.open("/var/tmp/scriptserver.out", "r+") do |output_file|
-      loop do
-        #TODO ask tom what we should do if they never send delimiter
-        output += output_file.gets
-        puts output
-        if end_of_message?(output) or end_of_conversation?(output)
-          puts 'breaking eom found' 
-          break 
-        end
-      end
-    end
-
-    output
-  end
-
-private
-
-  def end_of_conversation?(message)
+  def self.end_of_conversation?(message)
     message =~ END_CONVERSATION_PATTERN
   end
 
-  def end_of_message?(message)
+  def self.end_of_message?(message)
     message =~ END_OF_MESSAGE_PATTERN 
   end
 end

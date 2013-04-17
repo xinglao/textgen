@@ -3,11 +3,10 @@ require 'json'
 DELIM = '</eom>'
 
 def conversation(&block)
-  puts '<conversation>'
   c = ScriptConversation.new
+  gets
   c.instance_eval(&block)
-  puts DELIM + c.result_set.to_json
-  puts '</conversation>'
+  c.say '</conversation>'
 end
 
 class ScriptConversation
@@ -18,46 +17,62 @@ class ScriptConversation
   end
 
   def say(message)
-    puts message
+    json = {
+        :message => message,
+        :as => :info,
+        :input_set => @result_set
+      }.to_json
+    puts(json)
     STDOUT.flush
   end
 
   def ask(field, message, args={})
     # message <?>{}
-    as = args[:as]
+    as = args[:as] || :text
+    collection = args[:collection]
 
     valid = false
     tries = 0
 
     while !valid and tries < 5
       valid = true
-      pattern = /^.+/
+      pattern = args[:pattern] || /^.+/
       conversion = nil
 
-      say message + DELIM + @result_set.to_json
+      #what type of apples?</eom> {ui_options: {type: 'collection', options: [1,2,3]} ,'input_set': {:num_apples => 5}}
+      #say message + DELIM + @result_set.to_json
+
+      json = {
+        :message => message,
+        :as => as,
+        :collection => collection,
+        :input_set => @result_set
+      }.to_json
+
+      puts json
+      STDOUT.flush
+
       response = $stdin.gets.strip
 
       exit if response == 'quit'
 
-      unless as.nil?
-        case as
-          when :number
-            conversion = -> r {r.to_i}
-            pattern = /\d+/
-          when :email
-            pattern = /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
-          when :phone_number
-            #TODO
-          when :date
-            #TODO
-          when Regexp
-            pattern = as
-          else
-            raise 'You have entered an incorrect :as value'
-        end
+      case as
+        when :number
+          conversion = -> r {r.to_i}
+          pattern = /\d+/
+          valid = response =~ pattern
+        when :email
+          pattern = /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
+          valid = response =~ pattern
+        when :phone_number
+          #TODO
+        when :date
+          #TODO
+        when :select
+          valid = collection.include?(response)
+        when :text
+          valid = response =~ pattern
       end
-
-      valid = response =~ pattern
 
       tries += 1
       if valid
@@ -65,7 +80,7 @@ class ScriptConversation
         break
       end
 
-      puts "you did not enter it correctly, please try again..."
+      say "you did not enter it correctly, please try again..."
     end
 
     @result_set[field] = response
