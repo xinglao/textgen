@@ -5,7 +5,11 @@ DELIM = '</eom>'
 def conversation(&block)
   c = ScriptConversation.new
   gets
-  c.instance_eval(&block)
+  begin
+    c.instance_eval(&block)
+  rescue
+    c.say 'Sorry, there was an error with your request. Please try again later...'
+  end
   c.say '</conversation>'
 end
 
