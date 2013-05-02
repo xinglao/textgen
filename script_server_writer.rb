@@ -7,7 +7,9 @@ require 'active_support/all'
 
 require './lib/conversation'
 
-redis = Redis.new(:timeout => 0)
+$stdout.sync = true
+
+redis = Redis.new(host: ENV['TEXTGEN_REDIS_SERVER'])
 
 redis.subscribe('script_server_in') do |redis_channel|
   redis_channel.message do |channel, msg|

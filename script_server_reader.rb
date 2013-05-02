@@ -7,9 +7,13 @@ require 'active_support/all'
 
 require './lib/conversation'
 
+$stdout.sync = true
+
+redis = Redis.new(host: ENV['TEXTGEN_REDIS_SERVER'])
+
 loop do
   puts 'reading output'
   output = File.open("/var/tmp/scriptserver.out", &:gets)
   puts 'publishing output:' + output
-  Redis.new.publish('script_server_out', output)
+  redis.publish('script_server_out', output)
 end

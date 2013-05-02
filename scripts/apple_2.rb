@@ -7,19 +7,19 @@ conversation do
 
   loop do
     ask :number_of_apples, "how many apples do you want?", :as => :number
-    ask :type_of_apple, "What type of apple do you want?"
+    ask :type_of_apple, "What type of apple do you want?", :as => :select, :collection => ["green", "red", "blue"]
 
-    if number_of_apples < 20 and type_of_apple == "green"
-      break 
+    if number_of_apples > 20 and type_of_apple == "green"
+      say "umm we don't have that many green apples sorryyyyy"
     else
-      say "umm we don't have that many green apples sorry"
+      break 
     end
   end
 
   if number_of_apples > 10
     say "man that's a lot of apples"
   else
-    say "ok. that is that all"
+    say "ok. is that all?"
   end
 
   ask :age, "What is your age?", :as => :number
@@ -27,7 +27,7 @@ conversation do
   
   ask :email_address, "What is your email address?", :as => :email
 
-  ask :postal_code, "What's your postal code?", :as => /[A-Z][0-9][A-Z]\ ?[0-9][A-Z][0-9]/i#, :repeat_on_error => true, :error_message => 'nooooo'
+  ask :postal_code, "What's your postal code?", :pattern => /[A-Z][0-9][A-Z]\ ?[0-9][A-Z][0-9]/i#, :repeat_on_error => true, :error_message => 'nooooo'
 
   say 'goodbye'
 end
