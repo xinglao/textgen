@@ -7,8 +7,14 @@ def conversation(&block)
   gets
   begin
     c.instance_eval(&block)
-  rescue
+  rescue Exception => e
     c.say 'Sorry, there was an error with your request. Please try again later...'
+    c.say <<EOM 
+      <error> 
+        #{e.message}
+        #{e.backtrace}  
+      </error>
+EOM
   end
   c.say '</conversation>'
 end
