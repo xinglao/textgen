@@ -66,7 +66,10 @@ class ScriptConversation
 
       exit if response == 'quit'
 
-      case as
+      if response.start_with?("<recording>")
+        valid = true
+      else
+        case as
         when :number
           conversion = -> r {r.to_i}
           pattern = /\d+/
@@ -82,6 +85,7 @@ class ScriptConversation
           valid = collection.include?(response)
         when :text
           valid = response =~ pattern
+        end
       end
 
       tries += 1
