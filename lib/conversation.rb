@@ -3,7 +3,7 @@ class Conversation
   END_OF_MESSAGE_PATTERN = /<\/eom>/
   START_CONVERSATION_PATTERN = /^.*<conversation>/m
   END_CONVERSATION_PATTERN = /<\/conversation>.*$/m
-  SCRIPT_DIR    = '/home/subout/code/textgen/scripts'
+  SCRIPT_DIR    = ENV['SCRIPT_DIR']
 
   attr_accessor :user_id, :script
 
