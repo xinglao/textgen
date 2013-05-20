@@ -7,6 +7,8 @@ require 'active_support/all'
 
 require './lib/conversation'
 
+Dotenv.load
+
 $stdout.sync = true
 
 redis = Redis.new(host: ENV['TEXTGEN_REDIS_SERVER'])
