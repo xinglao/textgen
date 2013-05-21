@@ -2,7 +2,12 @@ require 'mina/bundler'
 require 'mina/git'
 require 'mina/rbenv'
 
-set :domain, '166.78.181.170'
+SERVER = {
+  "test" => '166.78.181.170',
+  "demo" => '166.78.155.19'
+}
+
+set :domain, SERVER.fetch(ENV['on'])
 set :deploy_to, '/var/www/textgen'
 set :repository, 'git@github.com:suboutdev/textgen.git'
 set :branch, 'master'
