@@ -4,10 +4,11 @@ require 'rubygems'
 require 'redis'
 require 'json'
 require 'active_support/all'
-
-require './lib/conversation'
+require 'dotenv'
 
 Dotenv.load
+
+require './lib/conversation'
 
 $stdout.sync = true
 
