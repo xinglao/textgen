@@ -82,7 +82,7 @@ class ScriptConversation
         when :date
           #TODO
         when :select
-          valid = collection.include?(response)
+          valid = collection.include?(response.downcase)
         when :text
           valid = response =~ pattern
         end
