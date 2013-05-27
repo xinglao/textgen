@@ -4,7 +4,9 @@ require 'mina/rbenv'
 
 SERVER = {
   "test" => '166.78.181.170',
-  "demo" => '166.78.155.19'
+  "demo" => '166.78.155.19',
+  "digi" => "198.199.118.209",
+  "rack" => "166.78.182.77"
 }
 
 set :domain, SERVER.fetch(ENV['on'])

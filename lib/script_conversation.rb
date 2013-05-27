@@ -1,4 +1,5 @@
 require 'json'
+require 'chronic'
 
 DELIM = '</eom>'
 
@@ -79,8 +80,13 @@ class ScriptConversation
           valid = response =~ pattern
         when :phone_number
           #TODO
-        when :date
-          #TODO
+        when :date, :datetime
+          parsed_time = Chronic.parse(response)
+          valid = !parsed_time
+          .nil?
+          conversion = -> r {
+            as == :date ? parsed_time.to_date : parsed_time
+          }
         when :select
           valid = collection.include?(response.downcase)
         when :text
