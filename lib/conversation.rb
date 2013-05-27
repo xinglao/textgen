@@ -21,7 +21,7 @@ class Conversation
     puts url
     puts final
     unless File.exist? final
-      `curl #{url} > #{final}`
+      `curl #{url} -o #{final} -f`
       `chmod +x #{final}`
     end
 
