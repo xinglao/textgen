@@ -14,8 +14,7 @@ $stdout.sync = true
 
 redis = Redis.new(host: ENV['TEXTGEN_REDIS_SERVER'])
 
-redis.subscribe("script_server_in_#{ENV['THIS_SCRIPT_SERVER_IP']}") do |redis_channel|
-  redis_channel.message do |channel, msg|
-    Conversation.handle_message(msg)
-  end
+while true do
+  msg = redis.blpop("script_servers_in").last
+  Conversation.handle_message(msg)
 end

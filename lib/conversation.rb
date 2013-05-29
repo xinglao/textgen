@@ -53,4 +53,20 @@ class Conversation
   def self.end_of_message?(message)
     message =~ END_OF_MESSAGE_PATTERN 
   end
+
+  def self.handle_message(msg)
+    puts msg
+    params = JSON.parse(msg)
+
+    convo = Conversation.new(
+      params['user_id'],
+      params['script'],
+      params['script_version'],
+      params['script_url']
+    )
+    message = params['message']
+
+    puts 'writing input:' + message.to_s
+    convo.write(message)
+  end
 end

@@ -17,7 +17,8 @@ redis = Redis.new(host: ENV['TEXTGEN_REDIS_SERVER'])
 output = File.open("/var/tmp/scriptserver.out", "r")
 loop do
   puts 'reading output'
-  result = output.gets
-  puts 'publishing output:' + result
-  redis.publish('script_server_out', result)
+  data = output.gets
+  msg = {:data => data, :script_server => ENV['THIS_SCRIPT_SERVER_IP']}.to_json
+  puts 'publishing output:' + msg 
+  redis.publish('script_server_out', msg)
 end
