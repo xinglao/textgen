@@ -14,7 +14,7 @@ $stdout.sync = true
 
 redis = Redis.new(host: ENV['TEXTGEN_REDIS_SERVER'])
 
-redis.subscribe("script_server_in_#{ENV['THIS_SCRIPT_SERVER_IP']}") do |redis_channel|
+redis.subscribe("script_server_in_#{IPAddress.my_first_public_ipv4}") do |redis_channel|
   redis_channel.message do |channel, msg|
     Conversation.handle_message(msg)
   end

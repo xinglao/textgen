@@ -18,7 +18,7 @@ output = File.open("/var/tmp/scriptserver.out", "r")
 loop do
   puts 'reading output'
   data = output.gets
-  msg = {:data => data, :script_server => ENV['THIS_SCRIPT_SERVER_IP']}.to_json
+  msg = {:data => data, :script_server => IPAddress.my_first_public_ipv4}.to_json
   puts 'publishing output:' + msg 
   redis.publish('script_server_out', msg)
 end

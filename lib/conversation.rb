@@ -70,3 +70,9 @@ class Conversation
     convo.write(message)
   end
 end
+
+class IPAddress
+  def self.my_first_public_ipv4
+    @ip_address ||= Socket.ip_address_list.detect{|intf| intf.ipv4? and !intf.ipv4_loopback? and !intf.ipv4_multicast? and !intf.ipv4_private?}.ip_address
+  end
+end
