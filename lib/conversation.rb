@@ -30,18 +30,22 @@ class Conversation
 
     #{ "command": "/home/subout/code/textgen/scripts/scrump_1.rb" , "dataLine": "h", "uuid": "self.user_id" }
 
-  def script_daemon_json(message)
-    { 
+  def script_daemon_json(message, control_message_type)
+     output = { 
       command: self.script,
       dataLine: message,
       uuid: self.user_id 
-    }.to_json
+    }
+
+    output.merge!('controlMessageType' => control_message_type) if control_message_type
+    
+    output.to_json
   end
 
-  def write(message)
+  def write(message, control_message_type)
     File.open("/var/tmp/scriptserver.in", "w+") do |f|
-      puts script_daemon_json(message)
-      f.puts script_daemon_json(message)
+      puts 'writing to pipe' + script_daemon_json(message, control_message_type)
+      f.puts script_daemon_json(message, control_message_type)
       f.flush 
     end
   end
@@ -65,9 +69,10 @@ class Conversation
       params['script_url']
     )
     message = params['message']
+    control_message_type = params['control_message_type']
 
     puts 'writing input:' + message.to_s
-    convo.write(message)
+    convo.write(message, control_message_type)
   end
 end
 
