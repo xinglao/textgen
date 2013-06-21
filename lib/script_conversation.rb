@@ -71,6 +71,22 @@ class ScriptConversation
         valid = true
       else
         case as
+        when :boolean
+          true_regex = /^(t(rue)?|y(es)?|1)$/
+          false_regex = /^(f(alse)?|no?|2|0)$/
+          if response =~ true_regex
+            conversion = -> r {
+              true
+            }
+            valid = true
+          elsif response =~ false_regex
+            conversion = -> r {
+              false
+            }
+            valid = true
+          else
+            valid = false
+          end
         when :number
           conversion = -> r {r.to_i}
           pattern = /\d+/
