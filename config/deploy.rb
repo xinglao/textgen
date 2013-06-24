@@ -3,16 +3,15 @@ require 'mina/git'
 require 'mina/rbenv'
 
 SERVER = {
-  "test" => '166.78.181.170',
-  "demo" => '166.78.155.19',
-  "prod1" => '198.199.118.17',
-  "prod2" => '198.199.101.154'
+  "textgentest" => '166.78.181.170',
+  "textgendemo" => '166.78.155.19',
+  "textgenprod" => ['198.199.118.17', '198.199.101.154']
 }
 
-set :domain, SERVER.fetch(ENV['on'])
+set :domains, Array(SERVER.fetch(ENV['on']))
 set :deploy_to, '/var/www/textgen'
 set :repository, 'git@github.com:suboutdev/textgen.git'
-set :branch, 'master'
+set :branch, ENV['on']
 
 set :shared_paths, ['.env', 'scripts']
 
@@ -24,7 +23,18 @@ task :environment do
 end
 
 desc "Deploys the current version to the server."
-task :deploy => :environment do
+task :deploy do
+  isolate do
+    domains.each do |domain|
+      puts "deploying to domain #{domain}"
+      set :domain, domain
+      invoke :_deploy
+      run!
+    end
+  end
+end
+
+task :_deploy => :environment do
   deploy do
     invoke :'git:clone'
     invoke :'deploy:link_shared_paths'
