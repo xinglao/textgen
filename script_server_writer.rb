@@ -12,7 +12,7 @@ require './lib/conversation'
 
 $stdout.sync = true
 
-redis = Redis.new(host: ENV['TEXTGEN_REDIS_SERVER'])
+redis = Redis.new
 
 redis.subscribe("script_server_in_#{IPAddress.my_first_public_ipv4}") do |redis_channel|
   redis_channel.message do |channel, msg|

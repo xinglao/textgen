@@ -12,7 +12,7 @@ require './lib/conversation'
 
 $stdout.sync = true
 
-redis = Redis.new(host: ENV['TEXTGEN_REDIS_SERVER'])
+redis = Redis.new
 
 while true do
   msg = redis.blpop("script_servers_in").last
