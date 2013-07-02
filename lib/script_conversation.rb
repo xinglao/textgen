@@ -5,7 +5,7 @@ DELIM = '</eom>'
 
 def conversation(&block)
   c = ScriptConversation.new
-  gets
+  $stdin.gets
   begin
     c.instance_eval(&block)
   rescue Exception => e
@@ -24,6 +24,7 @@ class ScriptConversation
   attr_accessor :result_set
 
   def initialize
+    @src, @dest, @script = ARGV
     @result_set = {}
   end
 
