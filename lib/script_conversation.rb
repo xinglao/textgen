@@ -96,7 +96,8 @@ class ScriptConversation
           pattern = /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
           valid = response =~ pattern
         when :phone_number
-          #TODO
+          pattern = /\d+/
+          valid = response =~ pattern and response.length == 10
         when :date, :datetime
           parsed_time = Chronic.parse(response)
           valid = !parsed_time
