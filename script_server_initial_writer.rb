@@ -5,16 +5,23 @@ require 'redis'
 require 'json'
 require 'active_support/all'
 require 'dotenv'
+require 'raven'
 
 Dotenv.load
 
-require './lib/conversation'
+Raven.configure do |config|
+  config.dsn = ENV['SENTRY_DSN']
+end
 
-$stdout.sync = true
+Raven.capture do
+  require './lib/conversation'
 
-redis = Redis.new
+  $stdout.sync = true
 
-while true do
-  msg = redis.blpop("script_servers_in").last
-  Conversation.handle_message(msg)
+  redis = Redis.new
+
+  while true do
+    msg = redis.blpop("script_servers_in").last
+    Conversation.handle_message(msg)
+  end
 end

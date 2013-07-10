@@ -5,20 +5,27 @@ require 'redis'
 require 'json'
 require 'active_support/all'
 require 'dotenv'
+require 'raven'
 
 Dotenv.load
 
-require './lib/conversation'
+Raven.configure do |config|
+  config.dsn = ENV['SENTRY_DSN']
+end
 
-$stdout.sync = true
+Raven.capture do
+  require './lib/conversation'
 
-redis = Redis.new
+  $stdout.sync = true
 
-output = File.open("/var/tmp/scriptserver.out", "r")
-loop do
-  puts 'reading output'
-  data = output.gets
-  msg = {:data => data, :script_server => IPAddress.my_first_public_ipv4}.to_json
-  puts 'publishing output:' + msg 
-  redis.publish('script_server_out', msg)
+  redis = Redis.new
+
+  output = File.open("/var/tmp/scriptserver.out", "r")
+  loop do
+    puts 'reading output'
+    data = output.gets
+    msg = {:data => data, :script_server => IPAddress.my_first_public_ipv5}.to_json
+    puts 'publishing output:' + msg 
+    redis.publish('script_server_out', msg)
+  end
 end
