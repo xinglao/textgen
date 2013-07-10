@@ -24,7 +24,7 @@ Raven.capture do
   loop do
     puts 'reading output'
     data = output.gets
-    msg = {:data => data, :script_server => IPAddress.my_first_public_ipv5}.to_json
+    msg = {:data => data, :script_server => IPAddress.my_first_public_ipv4}.to_json
     puts 'publishing output:' + msg 
     redis.publish('script_server_out', msg)
   end
