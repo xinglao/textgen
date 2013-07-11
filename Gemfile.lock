@@ -1,8 +1,8 @@
 GIT
   remote: git://github.com/nadarei/mina.git
-  revision: 8248fba1222ac4da7f73d422c9a71e99e23df957
+  revision: 105c428268f24109cc2618d6d22667e23cc0bcad
   specs:
-    mina (0.2.1)
+    mina (0.3.0)
       open4
       rake
 
