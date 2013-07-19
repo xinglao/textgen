@@ -10,6 +10,8 @@ def conversation(&block)
     c.instance_eval(&block)
   rescue Exception => e
     c.say 'Sorry, there was an error with your request. Please try again later...'
+    File.open('/tmp/gordon.txt', 'w+') { |file| file.write(e.message) }
+    File.open('/tmp/gordon.txt', 'w+') { |file| file.write(e.backtrace) }
     c.say <<EOM 
       <error> 
         #{e.message}
@@ -30,11 +32,27 @@ class ScriptConversation
 
   def say(message)
     json = {
-        :message => message,
-        :as => :info,
-        :input_set => @result_set
-      }.to_json
-    puts(json)
+      :message => message,
+      :as => :info,
+      :input_set => @result_set
+    }
+    echo(json.to_json)
+  end
+
+  def human!(message = 'Starting chat session... We will be with you shortly...')
+    message = {
+      :human => true,
+      :message => message,
+      :as => :info,
+      :input_set => @result_set
+    }
+    echo(message.to_json)
+
+    $stdin.gets.strip #block so that we don't continue script till they exit human mode
+  end
+
+  def echo(message)
+    puts(message)
     STDOUT.flush
   end
 
