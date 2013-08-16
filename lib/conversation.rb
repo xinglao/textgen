@@ -7,20 +7,20 @@ class Conversation
 
   attr_accessor :user_id, :script
 
-  def initialize(user_id, script, version, url, src, dest, script_name, mode)
+  def initialize(user_id, script, version, script_version_id, url, src, dest, script_name, mode)
     self.user_id = user_id
     @src = src
     @dest = dest
     @script_name = script_name
     @mode = mode
 
-    assign_script(script, version, url)
+    assign_script(script, version, script_version_id, url)
   end
 
-  def assign_script(script, version, url)
+  def assign_script(script, version, script_version_id, url)
     ext = File.extname(script)
     script.gsub!(ext,'')
-    name = (script + '_' + version.to_s).gsub(/[^_\w\.]+/, '_').downcase
+    name = (script + '_' + version.to_s + '_' + script_version_id).gsub(/[^_\w\.]+/, '_').downcase
     name += ext
     final = File.join(SCRIPT_DIR, name)
     puts url
@@ -72,6 +72,7 @@ class Conversation
       params['user_id'],
       params['script'],
       params['script_version'],
+      params['script_version_id'],
       params['script_url'],
       params['src'],
       params['dest'],
