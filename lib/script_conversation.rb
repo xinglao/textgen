@@ -91,14 +91,15 @@ class ScriptConversation
       else
         case as
         when :boolean
+          response = "" if response.nil?
           true_regex = /^(t(rue)?|y(es)?|1)$/
           false_regex = /^(f(alse)?|no?|2|0)$/
-          if response =~ true_regex
+          if response.downcase =~ true_regex
             conversion = -> r {
               true
             }
             valid = true
-          elsif response =~ false_regex
+          elsif response.downcase =~ false_regex
             conversion = -> r {
               false
             }
