@@ -20,11 +20,14 @@ GEM
       thor (>= 0.13.6)
     hashie (2.0.5)
     i18n (0.6.1)
+    mime-types (1.25)
     multi_json (1.7.2)
     multipart-post (1.2.0)
     open4 (1.3.0)
     rake (10.1.0)
     redis (3.0.4)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     sentry-raven (0.4.8)
       faraday (>= 0.7.6)
       hashie (>= 1.1.0)
@@ -43,4 +46,5 @@ DEPENDENCIES
   foreman (= 0.60.2)
   mina!
   redis
+  rest-client
   sentry-raven
