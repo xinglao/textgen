@@ -7,13 +7,14 @@ class Conversation
 
   attr_accessor :user_id, :script
 
-  def initialize(user_id, script, version, script_version_id, url, src, dest, script_name, mode, initial_message)
+  def initialize(user_id, script, version, script_version_id, url, src, dest, script_name, mode, initial_message, settings)
     self.user_id = user_id
     @src = src
     @dest = dest
     @script_name = script_name
     @mode = mode
     @initial_message = initial_message
+    @settings = settings
 
     assign_script(script, version, script_version_id, url)
   end
@@ -38,7 +39,7 @@ class Conversation
 
   def script_daemon_json(message, control_message_type)
      output = { 
-      arguments: [@src, @dest, @script_name, @mode, @initial_message],
+      arguments: [@src, @dest, @script_name, @mode, @initial_message, @settings],
       command: self.script,
       dataLine: message,
       uuid: self.user_id 
@@ -79,7 +80,8 @@ class Conversation
       params['dest'],
       params['script_name'],
       params['mode'],
-      params['initial_message']
+      params['initial_message'],
+      params['settings']
     )
     message = params['message']
     control_message_type = params['control_message_type']

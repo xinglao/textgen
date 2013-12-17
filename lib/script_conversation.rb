@@ -26,7 +26,7 @@ class ScriptConversation
   attr_accessor :result_set
 
   def initialize
-    @src, @dest, @script, @mode, @initial_message = ARGV
+    @src, @dest, @script, @mode, @initial_message, @settings = ARGV
     @result_set = {}
   end
 
