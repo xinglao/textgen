@@ -126,7 +126,7 @@ class ScriptConversation
             as == :date ? parsed_time.to_date : parsed_time
           }
         when :select
-          valid = collection.include?(response.downcase)
+          valid = collection.map(&:downcase).include?(response.downcase)
         when :text
           valid = response =~ pattern
         end
