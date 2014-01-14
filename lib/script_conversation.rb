@@ -1,5 +1,7 @@
 require 'json'
 require 'chronic'
+require 'dotenv'
+require 'redis'
 
 DELIM = '</eom>'
 
@@ -26,10 +28,21 @@ class ScriptConversation
   attr_accessor :result_set
 
   def initialize
-    @src, @dest, @script, @mode, @initial_message, @settings = ARGV
+    @src, @dest, @script, @mode, @initial_message = ARGV
     @result_set = {}
+ end
+
+  def get_setting(key)
+   Dotenv.load
+   redis = Redis.new
+   redis.get(key)
   end
 
+  def set_setting(key, value)
+   Dotenv.load
+   redis = Redis.new
+   redis.set(key, value)
+  end
   def say(message)
     json = {
       :message => message,

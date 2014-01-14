@@ -14,8 +14,20 @@ class Conversation
     @script_name = script_name
     @mode = mode
     @initial_message = initial_message
-    @settings = settings
+    @settings = nil
 
+    begin
+      # Grab the settings for this number. For now, use the corporate textgen account for authentication
+      settings = RestClient.get 'http://app.textgen.com/api/v1/settings.json', 
+        {
+          :params => {:auth_token => 'AxRvArLsV4PmTbJtpvHF', 
+          :textgen_numnber => @dest}
+      }
+      @settings = JSON.parse settings
+      puts "Just fetched #{@settings.inspect}"
+    rescue => detail 
+      print detail.backtrace.join("\n")
+    end
     assign_script(script, version, script_version_id, url)
   end
 
