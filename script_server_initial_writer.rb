@@ -6,6 +6,7 @@ require 'json'
 require 'active_support/all'
 require 'dotenv'
 require 'raven'
+require 'rest-client'
 
 Dotenv.load
 
