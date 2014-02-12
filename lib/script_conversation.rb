@@ -178,5 +178,8 @@ class ScriptConversation
 
   def record(field, value) 
     @result_set[field] = value
+    self.class.send(:define_method, field) do
+      value
+    end
   end
 end
