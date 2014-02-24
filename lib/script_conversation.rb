@@ -40,7 +40,7 @@ class ScriptConversation
       if settings
         @settings = JSON.parse(settings) 
       else
-        @settings = []
+        @settings = nil 
       end
       puts "Just fetched #{@settings.inspect} from #{@dest}"
     rescue => detail 
