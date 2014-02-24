@@ -7,28 +7,16 @@ class Conversation
 
   attr_accessor :user_id, :script
 
-  def initialize(user_id, script, version, script_version_id, url, src, dest, script_name, mode, initial_message, settings)
+  def initialize(user_id, script, version, script_version_id, url, src, dest, script_name, mode, initial_message)
     self.user_id = user_id
     @src = src
     @dest = dest
     @script_name = script_name
     @mode = mode
     @initial_message = initial_message
-    @settings = nil
 
-    begin
-      # Grab the settings for this number. For now, use the corporate textgen account for authentication
-      settings = RestClient.get 'http://app.textgen.com/api/v1/settings.json', 
-        {
-          :params => {:auth_token => 'AxRvArLsV4PmTbJtpvHF', 
-          :textgen_numnber => @dest}
-      }
-      @settings = JSON.parse settings
-      puts "Just fetched #{@settings.inspect}"
-    rescue => detail 
-      print detail.backtrace.join("\n")
-    end
     assign_script(script, version, script_version_id, url)
+
   end
 
   def assign_script(script, version, script_version_id, url)
@@ -51,7 +39,7 @@ class Conversation
 
   def script_daemon_json(message, control_message_type)
      output = { 
-      arguments: [@src, @dest, @script_name, @mode, @initial_message, @settings],
+      arguments: [@src, @dest, @script_name, @mode, @initial_message],
       command: self.script,
       dataLine: message,
       uuid: self.user_id 
@@ -92,8 +80,7 @@ class Conversation
       params['dest'],
       params['script_name'],
       params['mode'],
-      params['initial_message'],
-      params['settings']
+      params['initial_message']
     )
     message = params['message']
     control_message_type = params['control_message_type']

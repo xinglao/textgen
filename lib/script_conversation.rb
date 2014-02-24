@@ -30,19 +30,24 @@ class ScriptConversation
   def initialize
     @src, @dest, @script, @mode, @initial_message = ARGV
     @result_set = {}
- end
-
-  def get_setting(key)
-   Dotenv.load
-   redis = Redis.new
-   redis.get(key)
+     
+    begin
+      Dotenv.load
+      $redis = Redis.new
+      key = @dest + "_settings"
+      
+      settings = $redis.get(key)
+      if settings
+        @settings = JSON.parse(settings) 
+      else
+        @settings = []
+      end
+      puts "Just fetched #{@settings.inspect} from #{@dest}"
+    rescue => detail 
+      print detail.backtrace.join("\n")
+    end
   end
 
-  def set_setting(key, value)
-   Dotenv.load
-   redis = Redis.new
-   redis.set(key, value)
-  end
   def say(message)
     json = {
       :message => message,
@@ -151,7 +156,7 @@ class ScriptConversation
         break
       end
 
-      say "you did not enter it correctly, please try again..."
+      say "That does not match the type of data we are looking for. Please try again..."
     end
 
     @result_set[field] = response

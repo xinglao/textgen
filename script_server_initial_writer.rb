@@ -19,10 +19,10 @@ Raven.capture do
 
   $stdout.sync = true
 
-  redis = Redis.new
+  $redis = Redis.new
 
   while true do
-    msg = redis.blpop("script_servers_in").last
+    msg = $redis.blpop("script_servers_in").last
     Conversation.handle_message(msg)
   end
 end
