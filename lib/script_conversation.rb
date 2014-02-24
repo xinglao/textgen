@@ -31,21 +31,6 @@ class ScriptConversation
     @src, @dest, @script, @mode, @initial_message = ARGV
     @result_set = {}
      
-    begin
-      Dotenv.load
-      $redis = Redis.new
-      key = @dest + "_settings"
-      
-      settings = $redis.get(key)
-      if settings
-        @settings = JSON.parse(settings) 
-      else
-        @settings = []
-      end
-      puts "Just fetched #{@settings.inspect} from #{@dest}"
-    rescue => detail 
-      print detail.backtrace.join("\n")
-    end
   end
 
   def say(message)
