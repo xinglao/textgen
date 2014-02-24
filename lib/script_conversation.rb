@@ -42,7 +42,6 @@ class ScriptConversation
       else
         @settings = nil 
       end
-      puts "Just fetched #{@settings.inspect} from #{@dest}"
     rescue => detail 
       print detail.backtrace.join("\n")
     end
