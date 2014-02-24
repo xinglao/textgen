@@ -32,7 +32,7 @@ class ScriptConversation
     @result_set = {}
      
     begin
-      Dotenv.load("../.env")
+      Dotenv.load("/var/www/textgen/current/.env")
       $redis = Redis.new
       key = @dest + "_settings"
       
