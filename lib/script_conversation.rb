@@ -2,6 +2,7 @@ require 'json'
 require 'chronic'
 require 'dotenv'
 require 'redis'
+require 'rest_client'
 
 DELIM = '</eom>'
 
@@ -185,5 +186,13 @@ class ScriptConversation
     self.class.send(:define_method, field) do
       value
     end
+  end
+
+  def email(recipient, subject, text)
+    RestClient.post "https://api:key-2nuu4xauscga1cpnpr-tr3pf0ykkljx2@api.mailgun.net/v2/mail.textgen.com/messages",
+      :from => "noreply@mail.textgen.com",
+      :to => recipient,
+      :subject => subject,
+      :text => text 
   end
 end
