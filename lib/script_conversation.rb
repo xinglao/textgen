@@ -112,7 +112,7 @@ class ScriptConversation
         case as
         when :boolean
           response = "" if response.nil?
-          response.gsub!(/[^\w]/,"").downcase!
+          response.delete('^a-zA-Z0-9')
           true_regex = /^(t(rue)?|y(es)?|1)$/i
           false_regex = /^(f(alse)?|no?|2|0)$/i
           if response =~ true_regex
