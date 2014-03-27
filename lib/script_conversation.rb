@@ -104,13 +104,15 @@ class ScriptConversation
 
       exit if response == 'quit'
 
+      error_string = "That does not match the type of data we are looking for. Please try again..."
+
       if response.start_with?("<recording>")
         valid = true
       else
         case as
         when :boolean
           response = "" if response.nil?
-          response.downcase!
+          response.gsub!(/[^\w]/,"").downcase!
           true_regex = /^(t(rue)?|y(es)?|1)$/i
           false_regex = /^(f(alse)?|no?|2|0)$/i
           if response =~ true_regex
@@ -125,14 +127,17 @@ class ScriptConversation
             valid = true
           else
             valid = false
+            error_string = "Sorry, we're looking for a yes or a no. Please try again."
           end
         when :number
           conversion = -> r {r.to_i}
           pattern = /\d+/
           valid = response =~ pattern
+          error_string = "Sorry, we're looking for a whole number. Please try again." unless valid
         when :email
           pattern = /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
           valid = response =~ pattern
+          error_string = "Sorry, we're looking for a valid email. Please try again." unless valid
         when :phone_number
           pattern = /\d+/
           valid = response =~ pattern and response.length == 10
@@ -145,6 +150,8 @@ class ScriptConversation
           }
         when :select
           valid = collection.map(&:downcase).include?(response.downcase)
+          error_string = "Sorry, we're looking for one of the following choices:  #{collection.join(",")}. Please try again." unless valid
+
         when :text
           valid = response =~ pattern
         end
@@ -156,7 +163,7 @@ class ScriptConversation
         break
       end
 
-      say "That does not match the type of data we are looking for. Please try again..."
+      say error_string
     end
 
     @result_set[field] = response
