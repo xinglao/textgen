@@ -10,9 +10,8 @@ SERVER = {
 
 set :domains, Array(SERVER.fetch(ENV['on']))
 set :deploy_to, '/var/www/textgen'
-# change me
 set :repository, 'git@github.com:graves/textgen.git'
-set :branch, ENV['on']
+set :branch, 'master'
 
 set :shared_paths, ['.env', 'scripts']
 
