@@ -173,6 +173,118 @@ class ScriptConversation
     end
   end
 
+  def simon_ask(field, message, args={})
+    # message <?>{}
+    as = args[:as] || :text
+    max_tries = args[:tries] || 2
+    collection = args[:collection]
+
+    valid = false
+    tries = 0
+
+    while !valid and tries < max_tries
+      valid = true
+      pattern = args[:pattern] || /^.+/
+      conversion = nil
+
+      #what type of apples?</eom> {ui_options: {type: 'collection', options: [1,2,3]} ,'input_set': {:num_apples => 5}}
+      #say message + DELIM + @result_set.to_json
+
+      json = {
+        :message => message,
+        :as => as,
+        :collection => collection,
+        :input_set => @result_set
+      }.to_json
+
+      puts json
+      STDOUT.flush
+
+      response = $stdin.gets.strip
+
+      exit if response == 'quit'
+
+      error_string = "That does not match the type of data we are looking for. Please try again..."
+
+      if response.start_with?("<recording>")
+        valid = true
+      else
+        case as
+        when :boolean
+          response = "" if response.nil?
+          response.delete('^a-zA-Z0-9')
+          true_regex = /^(t(rue)?|y(es)?|1)$/i
+          false_regex = /^(f(alse)?|no?|2|0)$/i
+          if response =~ true_regex
+            conversion = -> r {
+              true
+            }
+            valid = true
+          elsif response =~ false_regex
+            conversion = -> r {
+              false
+            }
+            valid = true
+          else
+            valid = false
+            error_string = "Sorry, we're looking for a yes or a no. Please try again."
+          end
+        when :number
+          conversion = -> r {r.to_i}
+          pattern = /\d+/
+          valid = response =~ pattern
+          error_string = "Sorry, we're looking for a whole number. Please try again." unless valid
+        when :email
+          pattern = /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
+          valid = response =~ pattern
+          error_string = "Sorry, we're looking for a valid email. Please try again." unless valid
+        when :phone_number
+          pattern = /\d+/
+          valid = response =~ pattern and response.length == 10
+        when :date, :datetime
+          parsed_time = Chronic.parse(response)
+          valid = !parsed_time
+          .nil?
+          conversion = -> r {
+            as == :date ? parsed_time.to_date : parsed_time
+          }
+        when :select
+          valid = collection.map(&:downcase).include?(response.downcase)
+          error_string = "Sorry, we're looking for one of the following choices:  #{collection.join(",")}. Please try again." unless valid
+
+        when :text
+          valid = response =~ pattern
+        end
+      end
+
+      tries += 1
+      if valid
+        response = conversion.call(response) unless conversion.nil?
+        break
+      end
+
+      say error_string
+    end
+
+    if !valid && tries == max_tries
+      @result_set[field] = response
+
+      self.class.send(:define_method, field) do
+        response
+      end
+
+      say "We're sorry, we are having trouble understanding you. Please contact Guest services at [location] of call [GS phone] for assistance."
+      throw :goto_exit
+      return
+    end
+
+    @result_set[field] = response
+
+    self.class.send(:define_method, field) do
+      response
+    end
+  end
+
   def confirm
     say "confirm...?"
   end
