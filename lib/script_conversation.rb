@@ -15,10 +15,10 @@ def conversation(&block)
     c.say 'Sorry, there was an error with your request. Please try again later...'
     File.open('/tmp/gordon.txt', 'w+') { |file| file.write(e.message) }
     File.open('/tmp/gordon.txt', 'w+') { |file| file.write(e.backtrace) }
-    c.say <<EOM 
-      <error> 
+    c.say <<EOM
+      <error>
         #{e.message}
-        #{e.backtrace}  
+        #{e.backtrace}
       </error>
 EOM
   end
@@ -31,19 +31,19 @@ class ScriptConversation
   def initialize
     @src, @dest, @script, @mode, @initial_message = ARGV
     @result_set = {}
-     
+
     begin
       Dotenv.load("/var/www/textgen/current/.env")
       $redis = Redis.new
       key = @dest + "_settings"
-      
+
       settings = $redis.get(key)
       if settings
-        @settings = JSON.parse(settings) 
+        @settings = JSON.parse(settings)
       else
-        @settings = nil 
+        @settings = nil
       end
-    rescue => detail 
+    rescue => detail
       print detail.backtrace.join("\n")
     end
   end
@@ -263,7 +263,7 @@ class ScriptConversation
         break
       end
 
-      say error_string
+      say error_string unless tries == max_tries
     end
 
     if !valid && tries == max_tries
@@ -273,8 +273,9 @@ class ScriptConversation
         response
       end
 
-      say "We're sorry, we are having trouble understanding you. Please contact Guest services at [location] of call [GS phone] for assistance."
-      throw :goto_exit
+      simon = SimonWeb::API::Client.new
+      simon.associate_mall(@dest)
+      say "We're sorry, we are having trouble understanding you. Please visit Guest Services #{simon.guest_services_location} or call #{simon.guest_services_phone} for assistance."
       return
     end
 
