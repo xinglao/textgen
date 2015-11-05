@@ -14,6 +14,7 @@ def conversation(&block)
   begin
     c.instance_eval(&block)
   rescue ResponseNotUnderstood => e
+    c.say '</conversation>'
     return
   rescue Exception => e
     c.say 'Sorry, there was an error with your request. Please try again later...'
