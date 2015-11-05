@@ -4,6 +4,8 @@ require 'dotenv'
 require 'redis'
 require 'rest_client'
 
+class ResponseNotUnderstood < StandardError; end
+
 DELIM = '</eom>'
 
 def conversation(&block)
@@ -11,6 +13,8 @@ def conversation(&block)
   $stdin.gets
   begin
     c.instance_eval(&block)
+  rescue ResponseNotUnderstood => e
+    return
   rescue Exception => e
     c.say 'Sorry, there was an error with your request. Please try again later...'
     File.open('/tmp/gordon.txt', 'w+') { |file| file.write(e.message) }
@@ -276,7 +280,7 @@ class ScriptConversation
       simon = SimonWeb::API::Client.new
       simon.associate_mall(@dest)
       say "We're sorry, we are having trouble understanding you. Please visit Guest Services #{simon.guest_services_location} or call #{simon.guest_services_phone} for assistance."
-      return
+      raise ResponseNotUnderstood.new
     end
 
     @result_set[field] = response
